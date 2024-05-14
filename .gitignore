@@ -1,0 +1,14 @@
+*-blx.bib
+*.4ct
+*.4tc
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.tmp
+*.toc
+*.xref
