@@ -1,0 +1,153 @@
+\documentclass[12pt]{article}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{pythonhighlight}
+\usepackage[backend=bibtex]{biblatex}
+\title{Sigma Protocols}
+\usepackage{hyperref}
+\author{Mmanu Chaturvedi (40291202)}
+\newtheorem{definition}{Definition}
+\addbibresource{references.bib}
+
+
+\begin{document}
+	\maketitle
+	\tableofcontents
+	
+	
+	\section{Introduction}
+	This report attempts to understand some parts of sigma protocols.  Sigma protocols were proposed by Ronald Cramer in his thesis \cite{cramer1996modular}. The word `Sigma' was used because `Sig' can be used for zig-zag, symbolizing the three moves which constitute the sigma protocols and `ma' as a short for `Merlin-Arthur' games \cite{babai1988arthur}.  
+	
+	In order to define $\Sigma$-protocols, we need to define some prerequisites.  We define two entities, a prover $A$, and a verifier $B$.  $x$ is the common input to $A$ and $B$. $w$ is the private input to $A$.  The prover $A$ is trying to convince the verifier $B$ that it knows of the private input $w$.  And the aim is to do this as `quietly' as possible, i.e. the verifier must gain no knowledge other than whether $A$ knows $w$ or not.
+
+	Mathematically, let $R$ be a binary relation, i.e.\ a subset of $\{0, 1\}^* \times \{0, 1\}^*$, and $(x, w) \in R $. We require that the number of bits in $w$ is polynomial in the number of bits in $x$, i.e. $\left|w\right| = p(\left|x\right|)$.  The protocol has the following form:
+	
+	\begin{enumerate}
+		\item $A$ sends a message $a$ to $B$.
+		\item $B$ sends a random $t$-bit string $c$.
+		\item $A$ sends a reply $z$ that $B$ decides to accept or reject.
+	\end{enumerate}
+	
+	\begin{figure}
+	\includegraphics[scale=0.65]{sigma\_protocol.png}
+	\caption{Sigma protocol, a conversation between A (prover) and B (verifier) is defined by $(x, a, z, r)$, where $r$ is the result (accept or reject).}
+	\end{figure}
+	
+	The requirement is that $a$, $c$, $z$ and the decision($\phi$) are all calculated in polynomial time.  By polynomial time we mean that the computational complexity of calculating the values of $a$, $c$, $z$ and the decision is polynomial in the number of bits in the input to those calculations.
+	
+	\section{Completeness and Soundness}
+	A proof system or a verifying procedure has two fundamental properties \cite{Goldreich_2001}, \emph{soundness} and \emph{completeness}.  The \emph{soundness} property makes sure
+	of the ability of the verifier to protect itself from being convinced of a false statement, that is, if a statement is false, the verifier should reject it and if the statement is true, the verifier should definitely accept it. 
+	
+	The \emph{completeness} property, as opposed to the \emph{soundness} property focuses on the prover.  It ascertains that the prover has the ability to `convince' the verifier of true statements.
+	
+	It is important to remark the need to define these seemingly `obvious' definitions.  By \emph{Godel's Incompletness Theorem}, we know that not all statements can have a `proof system', so even if the statement is true there isn't a consistent proof system which can be known to prove it.
+	
+	\section{(Computational) Zero-Knowledge}
+	
+	In layman's terms, zero-knowledge proofs are proofs by which the verifier gains no `knowledge' other than whether the claimed statement is true or false.   While ignoring the definition of `knowledge' in itself, we define what is `gaining knowledge' and use that to define `zero-knowledge' proofs.  The idea of `zero-knowledge proofs' was proposed by Goldwasser et al.\ \cite{goldwasser2019knowledge}.
+	
+	To give a simple example, consider two people Alice and Bob, and imagine a large graph, $G$, is shared between the two.  Bob asks Alice questions about $G$ and Alice answers true or false.  Say Bob asks the question whether $G$ is Eulerian? Then clearly independent of what Alice says, Bob has \emph{gained no knowledge} because he could have answered the question efficiently (in polynomial time) by himself.  If however, Bob had asked if $G$ is Hamiltonian, and Alice would have said true or false, Bob would have \emph{gained knowledge} since he couldn't have calculated the answer to that question by himself (unless $\mathcal{P} = \mathcal{NP}$).  Thus Bob gains knowledge if after his interaction with Alice, he could compute something that he could not before the interaction.
+	
+	Mathematically, zero-knowledge proofs are defined in terms of interactive Turing machines.  They can be perfect zero-knowledge or computational zero-knowledge.  For the sake of this report, we skip the exact mathematical definition and refer the reader to the book \cite{Goldreich_2001}. Another level of approximation over the computational zero-knowledge leads to `honest-verifier zero-knowledge'.
+	
+	$(A, B)$ is called \emph{honest verifier zero-knowledge}, if a probabilistic polynomial-time Turing machine that when given input $x$ can produce accepting conversations, $(x, a, z, r)$, with the same distribution as between the prover, $A$ (who is given $(x, w) \in R$) and the verifier, $B$.  Note that we've skipped much of the mathematical definitions in this report, we need to define what's `same distribution', what is `probabilistic polynomial-time' Turing machine which is used for describing randomized algorithms, etc.  But we believe that the words capture the spirit of the mathematical idea.
+	
+	
+	We define a $\Sigma$-protocol over a relation $R$, $\{0, 1\}^* \times \{0, 1\}^*$, as the following:
+	
+	
+	
+	\begin{definition}
+		\cite{damgaard2002sigma} A protocol $\mathcal{P}$ is called a $\Sigma$-protocol for $R$ if:
+		
+		\begin{itemize}
+			\item $\mathcal{P}$ is of the above 3-move form, and we have completeness: if $A, B$
+			follow the protocol on input $x$ and private input $w$ to $B$ where $(x, w) \in
+			R$, the verifier always accepts.
+			\item For any $x$ and any pair of accepting conversations on input $x$,
+			$(a, c, z)$, $(a, c' , z')$ where $c \ne c'$ , one can efficiently compute $w$ such
+			that $(x, w) \in R$. This is sometimes called the special soundness property.
+			\item There exists a polynomial-time simulator $M$, which on input $x$ and a
+			random $c$ outputs an accepting conversation of the form $(a, c, z)$, with
+			the same probability distribution as conversations between the honest
+			$A, B$ on input $x$. This is sometimes called special honest-verifier zero-
+			knowledge.
+			
+		\end{itemize}
+		
+	\end{definition}
+	
+	
+%	\section{Definitions}
+%	We start with a few definitions that would be useful in understanding sigma protocols.
+%	
+%	\begin{definition}	
+%		An identification protocol is a triple $I = (G, P, V )$.
+%		
+%		\begin{itemize} 
+%			\item $G$ is a probabilistic, key generation algorithm, that takes no input, and outputs a pair
+%			$(vk , sk )$, where $vk$ is called the verification key and $sk$ is called the secret key.
+%			\item $P$ is an interactive protocol algorithm called the prover, which takes as input a secret key $sk$, as output by $G$.
+%			\item $V$ an interactive protocol algorithm called the verifier, which takes as input a verification key $vk$ , as output by $G$, and which outputs accept or reject.
+%		\end{itemize}
+%	\end{definition}
+%	\begin{definition}
+%		Attack Game for eavesdropping attack.
+%		
+%		For a given identification protocol $I = (G, P, V )$ and a given adversary $A$, the attack game runs as follows:
+%		
+%		\begin{itemize}
+%			\item{Key generation phase}: The challenger runs $(vk , sk ) \leftarrow G()$, and sends $vk$ to A.
+%			\item{Eavesdropping phase}: The adversary requests some number, say $Q$, of transcripts of conversations between $P$ and $V$. The challenger complies by running the interaction between $P$ and $V$ a total of $Q$ times, each time with $P$ initialized with input $sk$ and $V$ initialized with $vk$. The challenger sends these transcripts $T_1 ,\dots, T_Q$ to the adversary.
+%			
+%			\item{Impersonation attempt}: The challenger and $A$ interact, with the
+%			challenger following the verifier’s algorithm $V$ (with input $vk$), and with $A$ playing the role
+%			of a prover, but not necessarily following the prover’s algorithm $P$.
+%			
+%			We say that the adversary wins the game if $V$ outputs accept at the end of the interaction. We define $A$'s advantage with respect to $I$, denoted $ID2adv[A, I]$, as the probability that $A$ wins the
+%			game. 
+%		\end{itemize}
+%	\end{definition}
+%	
+%	\begin{definition}
+%		We say that an identification protocol $I$ is secure against eavesdropping
+%		attacks if for all efficient adversaries $A$, the quantity $ID2adv[A, I]$ is negligible.
+%	\end{definition}
+	
+	
+	\section{Schnorr's identification protocol (Honest-verifier zero-knowledge)}
+	
+	In this section, we give an example of honest-verifier zero-knowledge protocol.  We first define the discrete log problem.
+	
+	\subsection{Discrete log problem for $Z_p^{*}$}
+	
+	Consider a group $Z_p^{*}$ on $\{1, \dots, p-1\}$ with the group operation as multiplication modulo $p$.  The discrete log problem is to find $w$ if given $h$, $g$ and $p$, where $h = g^w$ mod $p$.  Where $g$ is the generator of $Z_p^*$, i.e., $Z_p^* = \{g^1, g^2, \dots,g^{p-1}\}$. It is not known if the complexity class of discrete log problem is $\mathcal{P}$ or not \cite{odlyzko2000discrete}, but by experience we assume that this is a hard problem.
+	
+	\subsection{The protocol}
+	
+	
+	
+	
+	The protocol of Schnorr's is an special case of Sigma protocol, so it consists of three steps.  We first define some prerequisites, let $p$ and $q$ be large prime numbers, such that $q | (p -1)$.  Such a prime $p$ is chosen so that \href{https://www.doc.ic.ac.uk/~mrh/330tutor/ch06s02.html}{DLP becomes difficult}.  Let $g$ be a generator for $Z_p^*$. And let the $h = g^w $ mod $p$, that is published by $A$. The following are the steps of Schnorr's sigma protocol:
+	
+	
+	\begin{enumerate}
+		\item$A$ chooses $r$ randomly in $Z_p$ and sends $a = g^r$ mod $p$ to $B$.
+		\item $B$ chooses a $t$-bit $c$ randomly and sends it to $A$. Assume $2^t < p$.
+		\item $A$ sends $z = r + cw$ mod $p$ to $B$, who checks that $g^z = ah^c$ mod $p$. The verifier, $B$, accepts if this is the case and rejects otherwise.
+	\end{enumerate} 
+	
+	The transcript of the above would look like $(a, c, z)$. 
+	
+	\subsection{Concerete example}
+	
+	In this example we use $p = 20336$ and find a generator $g = 127$.
+	\inputpythonfile{main.py}
+	
+	\section{Conclusion}
+	
+	In this report we document our understanding of the theory underlying sigma protocols in a non-mathematical manner.  Out of the many sigma protocols, we studied one protocol based on the hardness of the discrete log problem.  We found the book `Foundations of Cryptography' \cite{Goldreich_2001} a good resource for understanding the basics of zero-knowledge proofs (ZKP).  We also tried a short snippet in Python to understand how the sigma protocol based on Schnorr's identification scheme works.  Overall, this report just scratches the surface of the interesting field of ZKP.
+	
+	\printbibliography
+\end{document}
